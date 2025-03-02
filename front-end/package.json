@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@thirdweb-dev/react": "^4.9.4",
+    "@thirdweb-dev/sdk": "^4.0.99",
+    "dotenv": "^16.4.7",
+    "ethers": "^5.8.0"
+  }
+}
