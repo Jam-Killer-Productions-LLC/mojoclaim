@@ -1,0 +1,55 @@
+/* Reset default margins and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Background styling */
+body {
+    background: url('https://bafybeieypdtrkynr24g2enemwxssni7ug26zwvcz7mwkl6zmhlax4kvrfm.ipfs.dweb.link?filename=mojoclaimbackground.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+/* Content container */
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    max-width: 80%;
+    padding: 20px;
+}
+
+/* Mojo Token GIF styling */
+.logo {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+/* Animated text effect */
+.animated-text {
+    font-size: 24px;
+    font-weight: bold;
+    opacity: 0;
+    animation: fadeIn 2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
