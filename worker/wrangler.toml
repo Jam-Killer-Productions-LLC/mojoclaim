@@ -2,13 +2,6 @@ name = "mojo-claim-worker"
 main = "worker.js"
 compatibility_date = "2024-03-02"
 
-workers_dev = false  # Keeps it off workers.dev
-routes = ["mojoclaim.producerprotocol.pro/*"]  # Attach to custom domain
-
 [vars]
 THIRDWEB_CLIENT_ID = "your-client-id"
 THIRDWEB_SECRET_KEY = "your-secret-key"
-
-[[kv_namespaces]]
-binding = "ALLOWLIST_KV"
-id = "EndAllWar"
