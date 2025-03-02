@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "wrangler": "^3.111.0"
+  },
+  "dependencies": {
+    "@thirdweb-dev/sdk": "^4.0.99",
+    "dotenv": "^16.4.7",
+    "esbuild": "^0.25.0"
+  }
+}

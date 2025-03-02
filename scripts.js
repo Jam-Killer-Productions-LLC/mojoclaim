@@ -1,18 +1,21 @@
-// Mojo Claim Scripts - Handles Wallet Connection & Allowlist Check
-
 import { createThirdwebClient, getContract } from "thirdweb";
 import { defineChain } from "thirdweb/chains";
+import dotenv from "dotenv";
 
-// Create the thirdweb client
+// Load environment variables
+dotenv.config();
+
+// Initialize thirdweb with secure credentials
 const client = createThirdwebClient({
-    clientId: "YOUR_CLIENT_ID"
+    clientId: process.env.THIRDWEB_CLIENT_ID,
+    secretKey: process.env.THIRDWEB_SECRET_KEY,
 });
 
-// Connect to the Mojo token contract
+// Connect to the MojoClaim contract
 const contract = getContract({
     client,
-    chain: defineChain(10), // Optimism
-    address: "0x84d133d1CecB3190E110118AC6598C9BA45A6FD2"
+    chain: defineChain(10),
+    address: "0x84d133d1CecB3190E110118AC6598C9BA45A6FD2",
 });
 
 // Function to check Allowlist JSON for eligibility
