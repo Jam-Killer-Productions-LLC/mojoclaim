@@ -1,7 +1,0 @@
-name = "mojo-claim-worker"
-main = "worker.js"
-compatibility_date = "2024-03-02"
-
-[vars]
-THIRDWEB_CLIENT_ID = "your-client-id"
-THIRDWEB_SECRET_KEY = "your-secret-key"
