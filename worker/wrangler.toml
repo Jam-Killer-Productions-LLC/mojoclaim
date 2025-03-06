@@ -1,4 +1,13 @@
 name = "mojo-claim-worker"
-main = "index.js"
+main = "worker/index.js"
+
+[[kv_namespaces]]
+binding = "MOJO_KV"
+id = "16b139517ac346fb9e9a49ea69875723"
+
+[[kv_namespaces]]
+binding = "ALLOWLIST"
+id = "db9c0c1f1526469490e6ffe4f7a417c9"
 
 [vars]
+THIRDWEB_CLIENT_ID = "${env.THIRDWEB_CLIENT_ID}"

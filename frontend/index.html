@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mojo Claim Page</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/thirdweb/connect"></script>
 </head>
 <body>
     <div class="background">
@@ -12,7 +13,78 @@
             <img src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
                  alt="Mojo Token Logo" class="logo">
             <h1 class="animated-text">Awesome Artists-Sweet Fans-Fueled by Mojo</h1>
+            
+            <div id="wallet-connect">
+                <button id="connect-btn">Connect Wallet</button>
+                <button id="claim-btn" style="display:none;">Claim Mojo</button>
+            </div>
         </div>
     </div>
+
+    <script type="module">
+        import { createThirdwebClient, defineChain } from "thirdweb";
+        import { createWallet, walletConnect } from "thirdweb/wallets";
+
+        // Create Thirdweb client
+        const client = createThirdwebClient({
+            clientId: "YOUR_THIRDWEB_CLIENT_ID" // Replace with your actual client ID
+        });
+
+        // Define the connected wallet
+        const wallet = createWallet("io.metamask");
+
+        // Connect button logic
+        const connectBtn = document.getElementById('connect-btn');
+        const claimBtn = document.getElementById('claim-btn');
+
+        connectBtn.addEventListener('click', async () => {
+            try {
+                const account = await wallet.connect({
+                    client,
+                    chain: defineChain(10) // Optimism chain
+                });
+
+                connectBtn.style.display = 'none';
+                claimBtn.style.display = 'block';
+
+                // Store wallet address for later use
+                window.connectedWallet = account.address;
+            } catch (error) {
+                console.error('Wallet connection failed:', error);
+                alert('Failed to connect wallet. Please try again.');
+            }
+        });
+
+        // Claim button logic
+        claimBtn.addEventListener('click', async () => {
+            if (!window.connectedWallet) {
+                alert('Please connect your wallet first');
+                return;
+            }
+
+            try {
+                const response = await fetch('/claim', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        wallet: window.connectedWallet 
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert('Mojo claimed successfully! Transaction Hash: ' + result.transactionHash);
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Claim failed:', error);
+                alert('Claim process failed. Please try again.');
+            }
+        });
+    </script>
 </body>
 </html>
