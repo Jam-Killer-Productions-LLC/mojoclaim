@@ -22,7 +22,7 @@ id = "db9c0c1f1526469490e6ffe4f7a417c9" # Unused
 # R2 Bucket
 [[r2_buckets]]
 binding = "local_allowlist"
-bucket_name = "<bucketomojo>" 
+bucket_name = "bucketomojo" 
 
 [observability.logs]
 enabled = true
