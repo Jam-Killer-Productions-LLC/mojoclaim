@@ -27,7 +27,7 @@
 
         // Create Thirdweb client
         const client = createThirdwebClient({
-            clientId: "YOUR_THIRDWEB_CLIENT_ID" // Replace with your actual client ID
+            clientId: env.THIRDWEB_CLIENT_ID,
         });
 
         // Define the connected wallet

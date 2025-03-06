@@ -42,7 +42,7 @@ import {
   
         // Load Allowlist
         const allowlist = JSON.parse(
-          await env.ALLOWLIST.get("allowlist.json"),
+          await env.allowlist.get("allowlist.json"),
         );
   
         // Check Wallet Eligibility
@@ -62,7 +62,7 @@ import {
         }
   
         // Check If Already Claimed
-        const alreadyClaimed = await env.MOJO_KV.get(wallet);
+        const alreadyClaimed = await env.mojo.get(wallet);
         if (alreadyClaimed) {
           return new Response(
             JSON.stringify({
@@ -88,7 +88,7 @@ import {
         });
   
         // Mark as Claimed
-        await env.MOJO_KV.put(wallet, "claimed");
+        await env.mojo.put(wallet, "claimed");
   
         return new Response(
           JSON.stringify({
