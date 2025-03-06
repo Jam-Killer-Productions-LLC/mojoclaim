@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "thirdweb": "^5.90.3"
+  },
+  "devDependencies": {
+    "wrangler": "^3.114.0"
   }
 }
