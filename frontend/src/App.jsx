@@ -1,13 +1,20 @@
 // src/App.jsx
 import React from "react";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
+import { createThirdwebClient } from "@thirdweb-dev/sdk";
 import ClaimPage from "./components/ClaimPage";
 
-const desiredChainId = 10; // Use your chainId (for example, 10 for Optimism)
+// Create the thirdweb client using the client ID from the environment variable.
+const client = createThirdwebClient({
+  clientId: import.meta.env.VITE_CLIENT_ID,
+});
 
-const App = () => {
+// Define your desired chain. (For example, chainId 10.)
+const desiredChainId = 10;
+
+function App() {
   return (
-    <ThirdwebProvider desiredChainId={desiredChainId}>
+    <ThirdwebProvider desiredChainId={desiredChainId} client={client}>
       <div style={styles.app}>
         <header style={styles.header}>
           <img
@@ -20,7 +27,7 @@ const App = () => {
       </div>
     </ThirdwebProvider>
   );
-};
+}
 
 const styles = {
   app: {
