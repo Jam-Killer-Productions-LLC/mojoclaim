@@ -1,6 +1,8 @@
 {
-  "dependencies": {
-    "thirdweb": "^5.90.3"
+  "name": "mojoclaim",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "wrangler deploy worker/index.js"
   },
   "devDependencies": {
     "wrangler": "^3.114.0"
