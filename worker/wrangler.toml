@@ -1,6 +1,8 @@
 name = "mojo-claim-worker"
 main = "worker/index.js"
-
+compatibility_date = "2024-03-06" 
+[build]
+external = ["thirdweb", "thirdweb/chains"]
 [[kv_namespaces]]
 binding = "MOJO_KV"
 id = "16b139517ac346fb9e9a49ea69875723"
