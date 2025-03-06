@@ -1,23 +1,28 @@
 name = "mojo-claim-worker"
 main = "worker/index.js"
-compatibility_date = "2024-03-06" 
+compatibility_date = "2025-03-06"
+
 [build]
-external = ["thirdweb", "thirdweb/chains"]
+external = ["thirdweb", "thirdweb/chains", "thirdweb/wallets"]
+
+# Environment Variables
+[vars]
+QUICKNODE_RPC_URL = "https://nameless-practical-seed.optimism.quiknode.pro/e4850d21b93c9dc2993e74d91ebb00e4c3171f38/"
+# THIRDWEB_CLIENT_ID, THIRDWEB_SECRET_KEY, PRIVATE_KEY are secrets, set in dashboard
+
+# KV Namespaces
 [[kv_namespaces]]
 binding = "mojo"
 id = "16b139517ac346fb9e9a49ea69875723"
 
 [[kv_namespaces]]
 binding = "allowlist"
-id = "db9c0c1f1526469490e6ffe4f7a417c9"
-# wrangler.toml (wrangler v3.88.0^)
+id = "db9c0c1f1526469490e6ffe4f7a417c9" # Unused
+
+# R2 Bucket
+[[r2_buckets]]
+binding = "local_allowlist"
+bucket_name = "<bucketomojo>" # REPLACE THIS with your actual bucket name (e.g., "mojo-bucket")
+
 [observability.logs]
 enabled = true
-
-[[r2_buckets]]
-binding = local_allowlist"
-bucket_name = "<bucketomojo>"
-
-
-[vars]
-THIRDWEB_CLIENT_ID = "${env.THIRDWEB_CLIENT_ID}"
