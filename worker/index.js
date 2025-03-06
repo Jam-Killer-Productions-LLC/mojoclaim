@@ -60,7 +60,7 @@ export default {
         throw new Error("Allowlist not found in R2 bucket");
       }
       const allowlist = JSON.parse(await allowlistObj.text());
-      if (!allowlist.allow_list.includes(walletLower)) {
+      if (!allowlist.addresses.includes(walletLower)) {
         return new Response(
           JSON.stringify({ status: "error", message: "Not Eligible" }),
           { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
