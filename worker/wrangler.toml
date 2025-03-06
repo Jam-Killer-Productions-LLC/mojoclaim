@@ -1,0 +1,4 @@
+name = "mojo-claim-worker"
+main = "index.js"
+
+[vars]
