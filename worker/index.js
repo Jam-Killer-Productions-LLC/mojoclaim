@@ -37,7 +37,7 @@ import {
           client,
           chain: defineChain(10), // Optimism
           address:
-            "0x84d133d1CecB3190E110118AC6598C9BA45A6FD2",
+            "0xf9e7D3cd71Ee60C7A3A64Fa7Fcb81e610Ce1daA5",
         });
   
         // Load Allowlist
@@ -79,10 +79,9 @@ import {
         // Perform Claim Transaction
         const transaction = await prepareContractCall({
           contract,
-          method: "claim",
-          params: [],
+          method: "function mintTo(address _to, uint256 _amount)",
+          params: [_to, _amount],
         });
-  
         const { transactionHash } = await sendTransaction({
           transaction,
           account: wallet,

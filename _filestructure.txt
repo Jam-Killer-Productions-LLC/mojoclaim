@@ -1,0 +1,11 @@
+.
+├── _filestructure.txt
+├── frontend
+│   ├── index.html
+│   └── styles.css
+└── worker
+    ├── allowlist.json
+    ├── index.js
+    └── wrangler.toml
+
+3 directories, 6 files
