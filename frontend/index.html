@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,7 @@
             <h1 class="animated-text">Awesome Artists-Sweet Fans-Fueled by Mojo</h1>
             
             <div id="wallet-connect">
-                <button id="connect-btn">Connect Wallet</button>
+                <div id="connect-container"></div>
                 <button id="claim-btn" style="display:none;">Claim Mojo</button>
             </div>
         </div>
@@ -24,53 +24,40 @@
         import { ThirdwebProvider, ConnectButton } from "https://cdn.jsdelivr.net/npm/@thirdweb-dev/sdk/dist/browser/thirdweb-dev-sdk.esm.js";
         import { optimism } from "https://cdn.jsdelivr.net/npm/@thirdweb-dev/chains/dist/index.js";
 
-        const container = document.getElementById("wallet-connect");
+        const container = document.getElementById("connect-container");
         ThirdwebProvider.render({
-          activeChain: optimism,
-          clientId: "692b03efca5fa1f10f792dcf20fa172c", // Replace with your actual Thirdweb Client ID
+            activeChain: optimism,
+            clientId: "692b03efca5fa1f10f792dcf20fa172c",
         }, container);
 
-        const connectBtn = document.getElementById("connect-btn");
-        const claimBtn = document.getElementById("claim-btn");
-        let connectedWallet = null;
+        ConnectButton.render({
+            onConnect: async (wallet) => {
+                const connectedWallet = (await wallet.getAddress()).toLowerCase();
+                document.getElementById("claim-btn").style.display = "block";
+                document.getElementById("claim-btn").onclick = async () => {
+                    try {
+                        const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ wallet: connectedWallet }),
+                        });
+                        const result = await response.json();
 
-        connectBtn.addEventListener("click", async () => {
-          try {
-            const sdk = await ThirdwebProvider.getSDK();
-            await sdk.wallet.connect("metamask");
-            connectedWallet = (await sdk.wallet.getAddress()).toLowerCase();
-            connectBtn.style.display = "none";
-            claimBtn.style.display = "block";
-          } catch (error) {
-            console.error("Wallet connection failed:", error);
-            alert("Failed to connect wallet. Please try again.");
-          }
-        });
-
-        claimBtn.addEventListener("click", async () => {
-          if (!connectedWallet) {
-            alert("Please connect your wallet first");
-            return;
-          }
-
-          try {
-            const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ wallet: connectedWallet }),
-            });
-            const result = await response.json();
-
-            if (result.status === "success") {
-              alert("Mojo claimed successfully! Transaction Hash: " + result.transactionHash);
-            } else {
-              alert(result.message);
+                        if (result.status === "success") {
+                            alert(`Connected! Wallet: ${result.wallet}`);
+                        } else {
+                            alert(`Error: ${result.message}`);
+                        }
+                    } catch (error) {
+                        console.error("Claim failed:", error);
+                        alert("Claim process failed. Check console for details.");
+                    }
+                };
+            },
+            onDisconnect: () => {
+                document.getElementById("claim-btn").style.display = "none";
             }
-          } catch (error) {
-            console.error("Claim failed:", error);
-            alert("Claim process failed. Please try again.");
-          }
-        });
+        }, container);
     </script>
 </body>
 </html>
