@@ -2,10 +2,8 @@ name = "mojo_claim_worker"
 main = "index.js"
 compatibility_date = "2025-03-06"
 
-# ✅ REMOVE "external" (not needed in Cloudflare Workers)
 [build]
-command = "npm install"
-watch_dir = "worker"
+external = ["thirdweb", "thirdweb/chains", "thirdweb/wallets"]
 
 # ✅ Environment Variables
 [vars]
