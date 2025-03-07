@@ -1,4 +1,4 @@
-import { ThirdwebSDK } from "thirdweb";
+import { ThirdwebSDK } from "thirdweb/sdk";
 
 const sdk = new ThirdwebSDK("optimism", {
   clientId: "692b03efca5fa1f10f792dcf20fa172c",
