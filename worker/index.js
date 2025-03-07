@@ -4,21 +4,25 @@ import { privateKeyToAccount } from "thirdweb/wallets";
 
 export default {
   async fetch(request, env) {
+    // CORS configuration for security and cross-origin requests
     const corsHeaders = {
       "Access-Control-Allow-Origin": "https://mojoclaim.producerprotocol.pro",
       "Access-Control-Allow-Methods": "POST",
       "Access-Control-Allow-Headers": "Content-Type",
     };
 
+    // Handle preflight requests
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders });
     }
 
+    // Enforce POST method
     if (request.method !== "POST") {
       return new Response("Method Not Allowed", { status: 405 });
     }
 
     try {
+      // Validate wallet address
       const { wallet } = await request.json();
       if (!wallet || !wallet.match(/^0x[a-fA-F0-9]{40}$/)) {
         return new Response(
@@ -26,14 +30,16 @@ export default {
           { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
         );
       }
+
       const walletLower = wallet.toLowerCase();
 
+      // Load and validate allowlist
       const allowlistObj = await env.local_allowlist.get("allowlist.json");
       if (!allowlistObj) {
         throw new Error("Allowlist not found in R2 bucket");
       }
+
       const allowlist = JSON.parse(await allowlistObj.text());
-      console.log("Allowlist check:", allowlist.addresses);
       if (!allowlist.addresses.includes(walletLower)) {
         return new Response(
           JSON.stringify({ status: "error", message: "Not Eligible" }),
@@ -41,8 +47,8 @@ export default {
         );
       }
 
+      // Check if wallet has already claimed
       const alreadyClaimed = await env.mojo.get(walletLower);
-      console.log("KV check:", alreadyClaimed);
       if (alreadyClaimed) {
         return new Response(
           JSON.stringify({ status: "error", message: "Already Claimed" }),
@@ -50,6 +56,7 @@ export default {
         );
       }
 
+      // Initialize thirdweb client and account
       const client = createThirdwebClient({
         clientId: env.THIRDWEB_CLIENT_ID,
         secretKey: env.THIRDWEB_SECRET_KEY,
@@ -58,11 +65,13 @@ export default {
       if (!env.PRIVATE_KEY) {
         throw new Error("PRIVATE_KEY not configured");
       }
+
       const account = privateKeyToAccount({
         client,
         privateKey: env.PRIVATE_KEY,
       });
 
+      // Configure contract on Optimism
       const contract = getContract({
         client,
         chain: defineChain({
@@ -72,31 +81,31 @@ export default {
         address: "0xf9e7D3cd71Ee60C7A3A64Fa7Fcb81e610Ce1daA5",
       });
 
-      const amount = "100000000000000000000000"; // 100,000 * 10^18
-      console.log("Minting for:", walletLower);
+      // Prepare and send minting transaction
+      const amount = "100000000000000000000000"; // 100,000 tokens
       const transaction = await prepareContractCall({
         contract,
         method: "function mintTo(address _to, uint256 _amount)",
         params: [walletLower, amount],
       });
-      const { transactionHash } = await sendTransaction({
-        transaction,
-        account,
-      });
-      console.log("Minted, tx:", transactionHash);
 
-      await env.mojo.put(walletLower, "true");
-
-      return new Response(
-        JSON.stringify({ status: "success", transactionHash }),
-        { headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    } catch (error) {
-      console.error("Error:", error.message, error.stack);
-      return new Response(
-        JSON.stringify({ status: "error", message: error.message }),
-        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-  },
-};
+            const { transactionHash } = await sendTransaction({
+              transaction,
+              account,
+            });
+      
+            // Mark as claimed in KV store
+            await env.mojo.put(walletLower, "claimed");
+      
+            return new Response(
+              JSON.stringify({ status: "success", transactionHash }),
+              { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+            );
+          } catch (error) {
+            return new Response(
+              JSON.stringify({ status: "error", message: error.message }),
+              { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+            );
+          }
+        }
+      };
