@@ -15,6 +15,7 @@
             <div id="wallet-connect">
                 <button id="connect-btn">Connect Wallet</button>
                 <button id="claim-btn" style="display:none;">Claim Mojo</button>
+                <div id="status" style="color: white; margin-top: 10px;"></div>
             </div>
         </div>
     </div>
@@ -23,48 +24,62 @@
         import { ThirdwebSDK } from "https://cdn.jsdelivr.net/npm/@thirdweb-dev/sdk/dist/browser/thirdweb-dev-sdk.esm.js";
         import { optimism } from "https://cdn.jsdelivr.net/npm/@thirdweb-dev/chains/dist/index.js";
 
-        const sdk = new ThirdwebSDK(optimism, {
-            clientId: "692b03efca5fa1f10f792dcf20fa172c",
-        });
+        const status = document.getElementById("status");
+        status.textContent = "Initializing SDK...";
 
-        const connectBtn = document.getElementById("connect-btn");
-        const claimBtn = document.getElementById("claim-btn");
-        let connectedWallet = null;
+        try {
+            const sdk = new ThirdwebSDK(optimism, {
+                clientId: "692b03efca5fa1f10f792dcf20fa172c",
+            });
+            status.textContent = "SDK Loaded.";
 
-        connectBtn.addEventListener("click", async () => {
-            try {
-                await sdk.wallet.connect("metamask");
-                connectedWallet = (await sdk.wallet.getAddress()).toLowerCase();
-                connectBtn.style.display = "none";
-                claimBtn.style.display = "block";
-            } catch (error) {
-                console.error("Wallet connection failed:", error);
-                alert("Failed to connect wallet: " + error.message);
-            }
-        });
+            const connectBtn = document.getElementById("connect-btn");
+            const claimBtn = document.getElementById("claim-btn");
+            let connectedWallet = null;
 
-        claimBtn.addEventListener("click", async () => {
-            if (!connectedWallet) {
-                alert("Please connect your wallet first!");
-                return;
-            }
-            try {
-                const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ wallet: connectedWallet }),
-                });
-                const result = await response.json();
-                if (result.status === "success") {
-                    alert(`Connected! Wallet: ${result.wallet}`);
-                } else {
-                    alert(`Error: ${result.message}`);
+            connectBtn.addEventListener("click", async () => {
+                status.textContent = "Connecting to MetaMask...";
+                try {
+                    if (!window.ethereum) {
+                        throw new Error("MetaMask not detected!");
+                    }
+                    await sdk.wallet.connect("metamask");
+                    connectedWallet = (await sdk.wallet.getAddress()).toLowerCase();
+                    status.textContent = `Connected: ${connectedWallet}`;
+                    connectBtn.style.display = "none";
+                    claimBtn.style.display = "block";
+                } catch (error) {
+                    console.error("Wallet connection failed:", error);
+                    status.textContent = "Connection failed: " + error.message;
                 }
-            } catch (error) {
-                console.error("Claim failed:", error);
-                alert("Claim failed: " + error.message);
-            }
-        });
+            });
+
+            claimBtn.addEventListener("click", async () => {
+                if (!connectedWallet) {
+                    status.textContent = "Please connect your wallet first!";
+                    return;
+                }
+                status.textContent = "Sending claim request...";
+                try {
+                    const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ wallet: connectedWallet }),
+                    });
+                    const result = await response.json();
+                    if (result.status === "success") {
+                        status.textContent = `Success! Wallet: ${result.wallet}`;
+                    } else {
+                        status.textContent = `Error: ${result.message}`;
+                    }
+                } catch (error) {
+                    console.error("Claim failed:", error);
+                    status.textContent = "Claim failed: " + error.message;
+                }
+            });
+        } catch (error) {
+            status.textContent = "SDK init failed: " + error.message;
+        }
     </script>
 </body>
 </html>
