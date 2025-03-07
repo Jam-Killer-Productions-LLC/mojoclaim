@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.thirdweb.com;">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://thirdweb.com https://cdn.thirdweb.com; script-src 'self' 'unsafe-eval' https://thirdweb.com https://cdn.thirdweb.com;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mojo Claim Page</title>
     <link rel="stylesheet" href="/styles.css">
-    <script src="/thirdweb.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/thirdweb/3.2.2/thirdweb.umd.min.js"></script> 
 </head>
 <body>
     <div class="background">
@@ -20,10 +21,13 @@
             </div>
         </div>
     </div>
+
     <script>
-        const sdk = new ThirdwebSDK("optimism", {
+        // ✅ Fix: Properly load Thirdweb SDK
+        const sdk = new thirdweb.ThirdwebSDK("optimism", {
             clientId: "692b03efca5fa1f10f792dcf20fa172c",
         });
+
         const status = document.getElementById("status");
         status.textContent = "SDK Loaded.";
 
@@ -53,11 +57,17 @@
             try {
                 const wallet = (await sdk.wallet.getAddress()).toLowerCase();
                 status.textContent = "Claiming 100,000 Mojo...";
+                
+                // ✅ Fix: Ensure CORS headers allow requests
                 const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "*"
+                    },
                     body: JSON.stringify({ wallet }),
                 });
+
                 const result = await response.json();
                 if (result.status === "success") {
                     status.textContent = `Claimed! Tx Hash: ${result.transactionHash}`;
