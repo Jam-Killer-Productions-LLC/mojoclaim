@@ -2,15 +2,21 @@ import { createThirdwebClient, getContract, prepareContractCall, sendTransaction
 import { defineChain } from "thirdweb/chains";
 import { privateKeyToAccount } from "thirdweb/wallets";
 
+// Define CORS headers
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+// Define Optimism Chain Outside of Function
+const optimismChain = defineChain({
+  id: 10, // Optimism
+  rpc: process.env.QUICKNODE_RPC_URL,
+});
+
 export default {
   async fetch(request, env) {
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST",
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Content-Security-Policy": "default-src 'self' https://thirdweb.com https://cdn.thirdweb.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://thirdweb.com https://cdn.thirdweb.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://mojoclaim.pages.dev; img-src 'self' data: https://mojoclaim.pages.dev https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link; font-src 'self' https://fonts.gstatic.com;",
-    };
-
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders });
     }
@@ -30,13 +36,16 @@ export default {
 
       const walletLower = wallet.toLowerCase();
 
+      // Check if allowlist exists
       const allowlistObj = await env.local_allowlist.get("allowlist.json");
       if (!allowlistObj) {
-        throw new Error("Allowlist not found in R2 bucket");
+        return new Response(
+          JSON.stringify({ status: "error", message: "Allowlist not found" }),
+          { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
       }
 
       const allowlist = JSON.parse(await allowlistObj.text());
-
       if (!allowlist.addresses.includes(walletLower)) {
         return new Response(
           JSON.stringify({ status: "error", message: "Not Eligible" }),
@@ -44,6 +53,7 @@ export default {
         );
       }
 
+      // Check if already claimed
       const alreadyClaimed = await env.mojo_kv.get(walletLower);
       if (alreadyClaimed) {
         return new Response(
@@ -52,29 +62,33 @@ export default {
         );
       }
 
-      const client = createThirdwebClient({
-        clientId: env.THIRDWEB_CLIENT_ID,
-        secretKey: env.THIRDWEB_SECRET_KEY,
-      });
-
+      // Ensure private key exists
       if (!env.PRIVATE_KEY) {
-        throw new Error("PRIVATE_KEY not configured");
+        return new Response(
+          JSON.stringify({ status: "error", message: "PRIVATE_KEY not configured" }),
+          { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
       }
 
+      // Create Thirdweb Client
+      const client = createThirdwebClient({
+        clientId: env.THIRDWEB_CLIENT_ID,
+      });
+
+      // Create account
       const account = privateKeyToAccount({
         client,
         privateKey: env.PRIVATE_KEY,
       });
 
+      // Get contract instance
       const contract = getContract({
         client,
-        chain: defineChain({
-          id: 10, // Optimism
-          rpc: env.QUICKNODE_RPC_URL,
-        }),
+        chain: optimismChain,
         address: "0xf9e7D3cd71Ee60C7A3A64Fa7Fcb81e610Ce1daA5",
       });
 
+      // Prepare transaction
       const amount = "100000000000000000000000"; // 100,000 tokens
       const transaction = await prepareContractCall({
         contract,
@@ -82,11 +96,13 @@ export default {
         params: [walletLower, amount],
       });
 
+      // Send transaction
       const { transactionHash } = await sendTransaction({
         transaction,
         account,
       });
 
+      // Mark wallet as claimed
       await env.mojo_kv.put(walletLower, "claimed");
 
       return new Response(
