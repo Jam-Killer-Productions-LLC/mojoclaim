@@ -6,7 +6,9 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://unpkg.com 'unsafe-inline'; style-src 'self' https://*.ipfs.dweb.link 'unsafe-inline'; img-src 'self' https://*.ipfs.dweb.link data:;">
     <title>Mojo Claim Page</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Thirdweb SDK and ConnectButton -->
     <script src="https://unpkg.com/@thirdweb-dev/sdk/dist/browser.js"></script>
+    <script src="https://unpkg.com/@thirdweb-dev/connect/dist/index.umd.js"></script>
 </head>
 <body>
     <div class="background">
@@ -15,33 +17,40 @@
                  alt="Mojo Token Logo" class="logo">
             <h1 class="animated-text">Awesome Artists-Sweet Fans-Fueled by Mojo</h1>
             <div id="wallet-connect">
-                <button id="claim-btn">Claim Mojo</button>
+                <div id="connect-button"></div>
+                <button id="claim-btn" style="display: none;">Claim Mojo</button>
                 <div id="status" style="color: white; margin-top: 10px;">Initializing...</div>
             </div>
         </div>
     </div>
     <script>
-        const sdk = new ThirdwebSDK("optimism", {
+        // Initialize Thirdweb Connect
+        const connect = new ThirdwebConnect({
             clientId: "692b03efca5fa1f10f792dcf20fa172c",
+            chainId: 10, // Optimism
         });
-        const status = document.getElementById("status");
-        status.textContent = "SDK Loaded.";
 
+        // Mount ConnectButton
+        const connectButton = connect.connectButton();
+        connectButton.addEventListener("connect", async (wallet) => {
+            const walletAddress = wallet.address.toLowerCase();
+            document.getElementById("status").textContent = `Connected: ${walletAddress}`;
+            document.getElementById("connect-button").style.display = "none";
+            document.getElementById("claim-btn").style.display = "block";
+        });
+        connectButton.mount(document.getElementById("connect-button"));
+
+        // Claim logic
         const claimBtn = document.getElementById("claim-btn");
-
         claimBtn.addEventListener("click", async () => {
             try {
-                if (!window.ethereum) {
-                    status.textContent = "MetaMask not detected! Please install MetaMask.";
+                const wallet = connect.getWallet()?.address.toLowerCase();
+                if (!wallet) {
+                    document.getElementById("status").textContent = "No wallet connected!";
                     return;
                 }
 
-                status.textContent = "Connecting to MetaMask...";
-                await sdk.wallet.connect("metamask");
-                const wallet = (await sdk.wallet.getAddress()).toLowerCase();
-                status.textContent = `Connected: ${wallet}`;
-
-                status.textContent = "Claiming 100,000 Mojo...";
+                document.getElementById("status").textContent = "Claiming 100,000 Mojo...";
                 const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -49,13 +58,13 @@
                 });
                 const result = await response.json();
                 if (result.status === "success") {
-                    status.textContent = `Claimed! Tx Hash: ${result.transactionHash}`;
+                    document.getElementById("status").textContent = `Claimed! Tx Hash: ${result.transactionHash}`;
                 } else {
-                    status.textContent = `Error: ${result.message}`;
+                    document.getElementById("status").textContent = `Error: ${result.message}`;
                 }
             } catch (error) {
-                console.error("Action failed:", error);
-                status.textContent = "Failed: " + error.message;
+                console.error("Claim failed:", error);
+                document.getElementById("status").textContent = "Failed: " + error.message;
             }
         });
     </script>
