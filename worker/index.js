@@ -1,3 +1,6 @@
+// Add this constant at the TOP of your file, before the export default
+const cspHeaderValue =
+  "default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.thirdweb.com";
 import { createThirdwebClient, getContract, prepareContractCall, sendTransaction } from "thirdweb";
 import { defineChain } from "thirdweb/chains";
 import { privateKeyToAccount } from "thirdweb/wallets";
@@ -9,6 +12,7 @@ export default {
       "Access-Control-Allow-Origin": "https://mojoclaim.producerprotocol.pro",
       "Access-Control-Allow-Methods": "POST",
       "Access-Control-Allow-Headers": "Content-Type",
+      "Content-Security-Policy": cspHeaderValue,
     };
 
     // Handle preflight requests
@@ -40,15 +44,12 @@ export default {
       }
 
       const allowlist = JSON.parse(await allowlistObj.text());
-      if (!allowlist.addresses.includes(walletLower)) {
-        return new Response(
-          JSON.stringify({ status: "error", message: "Not Eligible" }),
-          { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
-        );
-      }
-
-      // Check if wallet has already claimed
-      const alreadyClaimed = await env.mojo.get(walletLower);
+    if (!allowlist.addresses.includes(walletLower)) {
+      return new Response(
+        JSON.stringify({ status: "error", message: "Not Eligible" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
       if (alreadyClaimed) {
         return new Response(
           JSON.stringify({ status: "error", message: "Already Claimed" }),
