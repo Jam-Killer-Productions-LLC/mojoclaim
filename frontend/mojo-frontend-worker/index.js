@@ -4,7 +4,10 @@ export default {
     const path = url.pathname;
 
     const headers = {
-      "Content-Security-Policy": "script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://*.ipfs.dweb.link; img-src 'self' https://*.ipfs.dweb.link data:;"
+      "Content-Security-Policy": "script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://*.ipfs.dweb.link; img-src 'self' https://*.ipfs.dweb.link data:;",
+      "Access-Control-Allow-Origin": "https://mojoclaim.producerprotocol.pro",
+      "Access-Control-Allow-Methods": "GET",
+      "Access-Control-Allow-Headers": "Content-Type",
     };
 
     if (path === "/styles.css") {

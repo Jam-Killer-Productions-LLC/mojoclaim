@@ -5,7 +5,7 @@ import { privateKeyToAccount } from "thirdweb/wallets";
 export default {
   async fetch(request, env) {
     const corsHeaders = {
-      "Access-Control-Allow-Origin": "https://mojoclaim.pages.dev",
+      "Access-Control-Allow-Origin": "https://mojoclaim.producerprotocol.pro",
       "Access-Control-Allow-Methods": "POST",
       "Access-Control-Allow-Headers": "Content-Type",
     };
