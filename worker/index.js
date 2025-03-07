@@ -9,12 +9,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-// Define Optimism Chain Outside of Function
-const optimismChain = defineChain({
-  id: 10, // Optimism
-  rpc: process.env.QUICKNODE_RPC_URL,
-});
-
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -36,7 +30,6 @@ export default {
 
       const walletLower = wallet.toLowerCase();
 
-      // Check if allowlist exists
       const allowlistObj = await env.local_allowlist.get("allowlist.json");
       if (!allowlistObj) {
         return new Response(
@@ -53,7 +46,6 @@ export default {
         );
       }
 
-      // Check if already claimed
       const alreadyClaimed = await env.mojo_kv.get(walletLower);
       if (alreadyClaimed) {
         return new Response(
@@ -62,7 +54,6 @@ export default {
         );
       }
 
-      // Ensure private key exists
       if (!env.PRIVATE_KEY) {
         return new Response(
           JSON.stringify({ status: "error", message: "PRIVATE_KEY not configured" }),
@@ -70,25 +61,24 @@ export default {
         );
       }
 
-      // Create Thirdweb Client
       const client = createThirdwebClient({
         clientId: env.THIRDWEB_CLIENT_ID,
       });
 
-      // Create account
       const account = privateKeyToAccount({
         client,
         privateKey: env.PRIVATE_KEY,
       });
 
-      // Get contract instance
       const contract = getContract({
         client,
-        chain: optimismChain,
+        chain: defineChain({
+          id: 10, // Optimism
+          rpc: env.QUICKNODE_RPC_URL,
+        }),
         address: "0xf9e7D3cd71Ee60C7A3A64Fa7Fcb81e610Ce1daA5",
       });
 
-      // Prepare transaction
       const amount = "100000000000000000000000"; // 100,000 tokens
       const transaction = await prepareContractCall({
         contract,
@@ -96,13 +86,11 @@ export default {
         params: [walletLower, amount],
       });
 
-      // Send transaction
       const { transactionHash } = await sendTransaction({
         transaction,
         account,
       });
 
-      // Mark wallet as claimed
       await env.mojo_kv.put(walletLower, "claimed");
 
       return new Response(
