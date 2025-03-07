@@ -1,17 +1,19 @@
-// ✅ Updated Content Security Policy (CSP) to allow Thirdweb scripts
+// ✅ Updated Content Security Policy to allow styles, images, scripts, and Thirdweb SDK
 const cspHeaderValue = `
   default-src 'self' https://thirdweb.com https://cdn.thirdweb.com https://thirdweb.dev;
   script-src 'self' 'unsafe-eval' https://thirdweb.com https://cdn.thirdweb.com https://thirdweb.dev;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  img-src 'self' data: https://yourdomain.com;
+  font-src 'self' https://fonts.gstatic.com;
 `;
 
-// ✅ Thirdweb SDK imports
 import { createThirdwebClient, getContract, prepareContractCall, sendTransaction } from "thirdweb";
 import { defineChain } from "thirdweb/chains";
 import { privateKeyToAccount } from "thirdweb/wallets";
 
 export default {
   async fetch(request, env) {
-    // ✅ CORS & CSP Headers
+    // ✅ CORS & CSP Headers (RESTORES STYLES, LOGO, AND SCRIPTS)
     const corsHeaders = {
       "Access-Control-Allow-Origin": "https://mojoclaim.producerprotocol.pro",
       "Access-Control-Allow-Methods": "POST",
