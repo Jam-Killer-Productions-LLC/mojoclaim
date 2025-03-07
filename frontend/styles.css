@@ -27,7 +27,7 @@ html, body {
   padding: 20px;
   text-align: center;
   color: #fff;
-  background: rgba(0, 0, 0, 0.5); /* Dark overlay for readability */
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 8px;
 }
 
@@ -52,7 +52,7 @@ html, body {
 button {
   padding: 10px 20px;
   font-size: 1.2rem;
-  background-color: #ff6200; /* Mojo orange */
+  background-color: #ff6200;
   color: white;
   border: none;
   border-radius: 5px;
@@ -65,8 +65,9 @@ button:hover {
 }
 
 #status {
+  color: white;
+  margin-top: 10px;
   font-size: 1rem;
-  color: #fff;
 }
 
 @media (max-width: 768px) {
