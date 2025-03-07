@@ -1,77 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval'; style-src 'self' https://*.ipfs.dweb.link; img-src 'self' https://*.ipfs.dweb.link data:;">
-    <title>Mojo Claim Page</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="background">
-        <div class="content">
-            <img src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
-                 alt="Mojo Token Logo" class="logo">
-            <h1 class="animated-text">Awesome Artists-Sweet Fans-Fueled by Mojo</h1>
-            <div id="wallet-connect">
-                <button id="claim-btn">Claim Mojo</button>
-                <div id="status" style="color: white; margin-top: 10px;"></div>
+<hea<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://unpkg.com; style-src 'self' https://*.ipfs.dweb.link; img-src 'self' https://*.ipfs.dweb.link data:;">
+        <title>Mojo Claim Page</title>
+        <link rel="stylesheet" href="styles.css">
+        <script src="https://unpkg.com/@thirdweb-dev/sdk/dist/browser.js"></script>
+    </head>
+    <body>
+        <div class="background">
+            <div class="content">
+                <img src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
+                     alt="Mojo Token Logo" class="logo">
+                <h1 class="animated-text">Awesome Artists-Sweet Fans-Fueled by Mojo</h1>
+                <div id="wallet-connect">
+                    <button id="claim-btn">Claim Mojo</button>
+                    <div id="status" style="color: white; margin-top: 10px;">Initializing...</div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <script type="module">
-        import { ThirdwebSDK } from "https://cdn.jsdelivr.net/npm/@thirdweb-dev/sdk/dist/browser/thirdweb-dev-sdk.esm.js";
-        import { optimism } from "https://cdn.jsdelivr.net/npm/@thirdweb-dev/chains/dist/index.js";
-
-        const status = document.getElementById("status");
-        status.textContent = "Initializing SDK...";
-
-        try {
-            const sdk = new ThirdwebSDK(optimism, {
+    
+        <script>
+            const sdk = new ThirdwebSDK("optimism", {
                 clientId: "692b03efca5fa1f10f792dcf20fa172c",
             });
+            const status = document.getElementById("status");
             status.textContent = "SDK Loaded.";
-
+    
             const claimBtn = document.getElementById("claim-btn");
-            let connectedWallet = null;
-
+            const contractAddress = "0xf9e7D3cd71Ee60C7A3A64Fa7Fcb81e610Ce1daA5";
+            const amount = "100000000000000000000000"; // 100,000 * 10^18
+    
             claimBtn.addEventListener("click", async () => {
                 try {
                     if (!window.ethereum) {
                         status.textContent = "MetaMask not detected! Please install MetaMask.";
                         return;
                     }
-
-                    // Connect wallet if not already connected
-                    if (!connectedWallet) {
-                        status.textContent = "Connecting to MetaMask...";
-                        await sdk.wallet.connect("metamask");
-                        connectedWallet = (await sdk.wallet.getAddress()).toLowerCase();
-                        status.textContent = `Connected: ${connectedWallet}`;
-                    }
-
-                    // Send claim request
-                    status.textContent = "Sending claim request...";
+    
+                    status.textContent = "Connecting to MetaMask...";
+                    await sdk.wallet.connect("metamask");
+                    const wallet = (await sdk.wallet.getAddress()).toLowerCase();
+                    status.textContent = `Connected: ${wallet}`;
+    
+                    status.textContent = "Checking eligibility...";
                     const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ wallet: connectedWallet }),
+                        body: JSON.stringify({ wallet }),
                     });
                     const result = await response.json();
-                    if (result.status === "success") {
-                        status.textContent = `Success! Wallet: ${result.wallet}`;
-                    } else {
+                    if (result.status !== "success") {
                         status.textContent = `Error: ${result.message}`;
+                        return;
                     }
+    
+                    status.textContent = "Minting 100,000 Mojo...";
+                    const contract = sdk.getContract(contractAddress);
+                    const tx = await contract.call("mintTo", [wallet, amount]);
+                    status.textContent = `Minted! Tx Hash: ${tx.receipt.transactionHash}`;
                 } catch (error) {
                     console.error("Action failed:", error);
                     status.textContent = "Failed: " + error.message;
                 }
             });
-        } catch (error) {
-            status.textContent = "SDK init failed: " + error.message;
-        }
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+    </html>
