@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval'; style-src 'self' https://bafybeichh5ayc3oiogb7k5b36cteojashw55m4ysz3aejruevb2cry4iua.ipfs.dweb.link; img-src 'self' https://*.ipfs.dweb.link data:;">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval'; style-src 'self' https://*.ipfs.dweb.link; img-src 'self' https://*.ipfs.dweb.link data:;">
     <title>Mojo Claim Page</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,8 +14,7 @@
                  alt="Mojo Token Logo" class="logo">
             <h1 class="animated-text">Awesome Artists-Sweet Fans-Fueled by Mojo</h1>
             <div id="wallet-connect">
-                <button id="connect-btn">Connect Wallet</button>
-                <button id="claim-btn" style="display:none;">Claim Mojo</button>
+                <button id="claim-btn">Claim Mojo</button>
                 <div id="status" style="color: white; margin-top: 10px;"></div>
             </div>
         </div>
@@ -34,34 +33,26 @@
             });
             status.textContent = "SDK Loaded.";
 
-            const connectBtn = document.getElementById("connect-btn");
             const claimBtn = document.getElementById("claim-btn");
             let connectedWallet = null;
 
-            connectBtn.addEventListener("click", async () => {
-                status.textContent = "Connecting to MetaMask...";
+            claimBtn.addEventListener("click", async () => {
                 try {
                     if (!window.ethereum) {
-                        throw new Error("MetaMask not detected! Please install MetaMask.");
+                        status.textContent = "MetaMask not detected! Please install MetaMask.";
+                        return;
                     }
-                    await sdk.wallet.connect("metamask");
-                    connectedWallet = (await sdk.wallet.getAddress()).toLowerCase();
-                    status.textContent = `Connected: ${connectedWallet}`;
-                    connectBtn.style.display = "none";
-                    claimBtn.style.display = "block";
-                } catch (error) {
-                    console.error("Wallet connection failed:", error);
-                    status.textContent = "Connection failed: " + error.message;
-                }
-            });
 
-            claimBtn.addEventListener("click", async () => {
-                if (!connectedWallet) {
-                    status.textContent = "Please connect your wallet first!";
-                    return;
-                }
-                status.textContent = "Sending claim request...";
-                try {
+                    // Connect wallet if not already connected
+                    if (!connectedWallet) {
+                        status.textContent = "Connecting to MetaMask...";
+                        await sdk.wallet.connect("metamask");
+                        connectedWallet = (await sdk.wallet.getAddress()).toLowerCase();
+                        status.textContent = `Connected: ${connectedWallet}`;
+                    }
+
+                    // Send claim request
+                    status.textContent = "Sending claim request...";
                     const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -74,8 +65,8 @@
                         status.textContent = `Error: ${result.message}`;
                     }
                 } catch (error) {
-                    console.error("Claim failed:", error);
-                    status.textContent = "Claim failed: " + error.message;
+                    console.error("Action failed:", error);
+                    status.textContent = "Failed: " + error.message;
                 }
             });
         } catch (error) {
