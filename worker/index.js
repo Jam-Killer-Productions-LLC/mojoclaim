@@ -2,29 +2,24 @@ import { createThirdwebClient, getContract, prepareContractCall, sendTransaction
 import { defineChain } from "thirdweb/chains";
 import { privateKeyToAccount } from "thirdweb/wallets";
 
-// ✅ Updated Cloudflare Worker with fixed KV and Service Binding names
 export default {
   async fetch(request, env) {
-    // ✅ CORS & Security Headers
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST",
       "Access-Control-Allow-Headers": "Content-Type",
-      "Content-Security-Policy": "default-src 'self' https://thirdweb.com https://cdn.thirdweb.com; script-src 'self' 'unsafe-eval' https://thirdweb.com https://cdn.thirdweb.com;"
+      "Content-Security-Policy": "default-src 'self' https://thirdweb.com https://cdn.thirdweb.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://thirdweb.com https://cdn.thirdweb.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://mojoclaim.pages.dev; img-src 'self' data: https://mojoclaim.pages.dev https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link; font-src 'self' https://fonts.gstatic.com;",
     };
 
-    // ✅ Handle CORS Preflight Requests
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // ✅ Enforce POST-only method
     if (request.method !== "POST") {
       return new Response("Method Not Allowed", { status: 405 });
     }
 
     try {
-      // ✅ Parse request body
       const { wallet } = await request.json();
       if (!wallet || !wallet.match(/^0x[a-fA-F0-9]{40}$/)) {
         return new Response(
@@ -35,7 +30,6 @@ export default {
 
       const walletLower = wallet.toLowerCase();
 
-      // ✅ Load allowlist from Cloudflare R2
       const allowlistObj = await env.local_allowlist.get("allowlist.json");
       if (!allowlistObj) {
         throw new Error("Allowlist not found in R2 bucket");
@@ -43,7 +37,6 @@ export default {
 
       const allowlist = JSON.parse(await allowlistObj.text());
 
-      // ✅ Check if wallet is eligible
       if (!allowlist.addresses.includes(walletLower)) {
         return new Response(
           JSON.stringify({ status: "error", message: "Not Eligible" }),
@@ -51,7 +44,6 @@ export default {
         );
       }
 
-      // ✅ Check if wallet has already claimed
       const alreadyClaimed = await env.mojo_kv.get(walletLower);
       if (alreadyClaimed) {
         return new Response(
@@ -60,7 +52,6 @@ export default {
         );
       }
 
-      // ✅ Initialize Thirdweb Client
       const client = createThirdwebClient({
         clientId: env.THIRDWEB_CLIENT_ID,
         secretKey: env.THIRDWEB_SECRET_KEY,
@@ -70,23 +61,20 @@ export default {
         throw new Error("PRIVATE_KEY not configured");
       }
 
-      // ✅ Create Thirdweb account
       const account = privateKeyToAccount({
         client,
         privateKey: env.PRIVATE_KEY,
       });
 
-      // ✅ Define Optimism contract
       const contract = getContract({
         client,
         chain: defineChain({
           id: 10, // Optimism
-          rpc: env.QUICKNODE_RPC_URL || "https://nameless-practical-seed.optimism.quiknode.pro/e4850d21b93c9dc2993e74d91ebb00e4c3171f38/",
+          rpc: env.QUICKNODE_RPC_URL,
         }),
         address: "0xf9e7D3cd71Ee60C7A3A64Fa7Fcb81e610Ce1daA5",
       });
 
-      // ✅ Prepare & send mint transaction
       const amount = "100000000000000000000000"; // 100,000 tokens
       const transaction = await prepareContractCall({
         contract,
@@ -99,7 +87,6 @@ export default {
         account,
       });
 
-      // ✅ Store claim status in KV
       await env.mojo_kv.put(walletLower, "claimed");
 
       return new Response(
