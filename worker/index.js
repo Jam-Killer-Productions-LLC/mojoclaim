@@ -33,7 +33,10 @@ export default {
       if (!allowlistObj) {
         throw new Error("Allowlist not found in R2 bucket");
       }
-      const allowlist = JSON.parse(await allowlistObj.text());
+      const allowlistText = await allowlistObj.text();
+      console.log("Allowlist raw:", allowlistText);
+      const allowlist = JSON.parse(allowlistText);
+      console.log("Allowlist parsed:", allowlist.addresses);
       if (!allowlist.addresses.includes(walletLower)) {
         return new Response(
           JSON.stringify({ status: "error", message: "Not Eligible" }),
@@ -43,6 +46,7 @@ export default {
 
       // Check KV
       const alreadyClaimed = await env.mojo.get(walletLower);
+      console.log("KV check:", alreadyClaimed);
       if (alreadyClaimed) {
         return new Response(
           JSON.stringify({ status: "error", message: "Already Claimed" }),
@@ -73,8 +77,9 @@ export default {
         address: "0xf9e7D3cd71Ee60C7A3A64Fa7Fcb81e610Ce1daA5",
       });
 
-      // Mint 1 token (testing, not 100,000)
-      const amount = "1000000000000000000"; // 1 * 10^18
+      // Mint 100,000 tokens
+      const amount = "100000000000000000000000"; // 100,000 * 10^18
+      console.log("Minting for:", walletLower, "amount:", amount);
       const transaction = await prepareContractCall({
         contract,
         method: "function mintTo(address _to, uint256 _amount)",
@@ -84,6 +89,7 @@ export default {
         transaction,
         account,
       });
+      console.log("Minted! Tx Hash:", transactionHash);
 
       // Mark as claimed
       await env.mojo.put(walletLower, "true");
@@ -93,7 +99,7 @@ export default {
         { headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     } catch (error) {
-      console.error("Error:", error.message);
+      console.error("Error:", error.message, error.stack);
       return new Response(
         JSON.stringify({ status: "error", message: error.message }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
