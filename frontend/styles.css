@@ -64,12 +64,6 @@ button:hover {
   background-color: #e55a00;
 }
 
-#status {
-  color: white;
-  margin-top: 10px;
-  font-size: 1rem;
-}
-
 @media (max-width: 768px) {
   .content {
       padding: 15px;
