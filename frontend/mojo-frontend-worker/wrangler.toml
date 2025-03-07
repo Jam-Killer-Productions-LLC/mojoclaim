@@ -3,3 +3,8 @@ compatibility_date = "2025-03-07"
 [[r2_buckets]]
 bucket_name = "mojoclaim-assets"
 binding = "ASSETS"
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = false
+
+
