@@ -7,22 +7,18 @@
 html, body {
   height: 100%;
   font-family: sans-serif;
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .background {
   background-image: url('https://bafybeib7yugpk6niip2t5gru6m5qcp43g4g2hp4fzlnlj7tm545vdj733u.ipfs.dweb.link?filename=newbackgroundmojoclaim.gif');
-  background-size: cover;
+  background-size: contain; /* Ensures the full GIF is visible without cropping */
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
   height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .content {
@@ -31,15 +27,14 @@ html, body {
   padding: 20px;
   text-align: center;
   color: #fff;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 8px;
 }
 
 .logo {
   max-width: 200px;
   height: auto;
-  margin: 0 auto;
-  display: block;
+  margin-bottom: 20px;
 }
 
 .animated-text {
