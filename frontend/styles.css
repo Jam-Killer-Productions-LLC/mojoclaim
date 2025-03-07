@@ -10,7 +10,7 @@ html, body {
 }
 
 .background {
-  background-image: url('https://bafybeib7yugpk6niip2t5gru6m5qcp43g4g2hp4fzlnlj7tm545vdj733u.ipfs.dweb.link?filename=newbackgroundmojoclaim.gif');
+  background-image: url('https://bafybeichh5ayc3oiogb7k5b36cteojashw55m4ysz3aejruevb2cry4iua.ipfs.dweb.link?filename=MojoClaimPageNewbackground.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -27,12 +27,12 @@ html, body {
   padding: 20px;
   text-align: center;
   color: #fff;
-  background: rgba(0, 0, 0, 0.5); /* Darker overlay for contrast */
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay for readability */
   border-radius: 8px;
 }
 
 .logo {
-  max-width: 200px; /* Smaller logo */
+  max-width: 200px;
   height: auto;
   margin-bottom: 20px;
 }
@@ -64,6 +64,11 @@ button:hover {
   background-color: #e55a00;
 }
 
+#status {
+  font-size: 1rem;
+  color: #fff;
+}
+
 @media (max-width: 768px) {
   .content {
       padding: 15px;
@@ -75,6 +80,10 @@ button:hover {
   .animated-text {
       font-size: 1.5rem;
   }
+  button {
+      padding: 8px 16px;
+      font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -85,7 +94,7 @@ button:hover {
       font-size: 1.2rem;
   }
   button {
-      font-size: 1rem;
-      padding: 8px 16px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
   }
 }
