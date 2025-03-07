@@ -2,7 +2,7 @@ import { createThirdwebClient, getContract, prepareContractCall, sendTransaction
 import { defineChain } from "thirdweb/chains";
 import { privateKeyToAccount } from "thirdweb/wallets";
 
-// ✅ Updated Cloudflare Worker with renamed bindings
+// ✅ Updated Cloudflare Worker with fixed KV and Service Binding names
 export default {
   async fetch(request, env) {
     // ✅ CORS & Security Headers
