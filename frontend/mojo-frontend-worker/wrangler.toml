@@ -1,0 +1,5 @@
+name = "mojo-frontend-worker"
+compatibility_date = "2025-03-07"
+[[r2_buckets]]
+bucket_name = "mojoclaim-assets"
+binding = "ASSETS"

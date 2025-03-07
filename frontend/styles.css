@@ -3,6 +3,11 @@
   padding: 0;
   box-sizing: border-box;
 }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 html, body {
   height: 100%;
@@ -62,6 +67,12 @@ button {
 
 button:hover {
   background-color: #e55a00;
+}
+
+#status {
+  color: white;
+  margin-top: 10px;
+  font-size: 1rem;
 }
 
 @media (max-width: 768px) {

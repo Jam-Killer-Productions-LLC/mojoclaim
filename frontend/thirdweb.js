@@ -1,0 +1,1 @@
+Found. Redirecting to /@thirdweb-dev/sdk@4.0.99/dist/browser.js
