@@ -1,15 +1,15 @@
-name = "mojo_claim_worker"
-main = "index.js"
+name = "mojo-claim-worker"m/worker
+main = "worker/index.js"
 compatibility_date = "2025-03-06"
 
 [build]
 external = ["thirdweb", "thirdweb/chains", "thirdweb/wallets"]
 
-# ✅ Environment Variables
+# Environment Variables
 [vars]
 QUICKNODE_RPC_URL = "https://nameless-practical-seed.optimism.quiknode.pro/e4850d21b93c9dc2993e74d91ebb00e4c3171f38/"
 
-# ✅ Fix Duplicate Binding: Renamed `mojo` to `mojo_kv` (for KV storage)
+# KV Namespaces
 [[kv_namespaces]]
 binding = "mojo_kv"
 id = "16b139517ac346fb9e9a49ea69875723"
@@ -18,16 +18,16 @@ id = "16b139517ac346fb9e9a49ea69875723"
 binding = "allowlist"
 id = "db9c0c1f1526469490e6ffe4f7a417c9"
 
-# ✅ Fix Duplicate Binding: Renamed `mojo` to `mojo_service` (for Cloudflare Pages Service Binding)
-[[services]]
-binding = "mojo_service"
-service = "mojo_claim_worker"
-entrypoint = "fetch"
-
-# ✅ R2 Bucket
+# R2 Bucket
 [[r2_buckets]]
 binding = "local_allowlist"
 bucket_name = "bucketomojo"
+
+# Service Binding for Cloudflare Pages
+[[services]]
+binding = "mojo_service"
+service = "mojo-claim-worker"
+entrypoint = "fetch"
 
 [observability.logs]
 enabled = true
