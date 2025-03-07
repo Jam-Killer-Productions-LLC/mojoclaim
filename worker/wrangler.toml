@@ -1,4 +1,4 @@
-name = "mojo-claim-worker"
+name = "mojo_claim_worker"
 main = "index.js"
 compatibility_date = "2025-03-06"
 
@@ -13,9 +13,9 @@ external = ["thirdweb", "thirdweb/chains", "thirdweb/wallets"]
 [vars]
 QUICKNODE_RPC_URL = "https://nameless-practical-seed.optimism.quiknode.pro/e4850d21b93c9dc2993e74d91ebb00e4c3171f38/"
 
-# ✅ KV Namespaces
+# ✅ KV Namespaces (Renamed from "mojo" to "mojo_kv")
 [[kv_namespaces]]
-binding = "mojo"
+binding = "mojo_kv"
 id = "16b139517ac346fb9e9a49ea69875723"
 
 [[kv_namespaces]]
@@ -27,10 +27,10 @@ id = "db9c0c1f1526469490e6ffe4f7a417c9"
 binding = "local_allowlist"
 bucket_name = "bucketomojo"
 
-# ✅ Service Binding for Cloudflare Pages
+# ✅ Service Binding for Cloudflare Pages (Renamed from "mojo" to "mojo_service")
 [[services]]
-binding = "mojo"
-service = "mojo-claim-worker"
+binding = "mojo_service"
+service = "mojo_claim_worker"
 entrypoint = "fetch"
 
 [observability.logs]

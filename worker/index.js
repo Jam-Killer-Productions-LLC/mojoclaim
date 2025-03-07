@@ -1,24 +1,16 @@
-// ✅ Updated Content Security Policy to allow styles, images, scripts, and Thirdweb SDK
-const cspHeaderValue = `
-  default-src 'self' https://thirdweb.com https://cdn.thirdweb.com https://thirdweb.dev;
-  script-src 'self' 'unsafe-eval' https://thirdweb.com https://cdn.thirdweb.com https://thirdweb.dev;
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: https://yourdomain.com;
-  font-src 'self' https://fonts.gstatic.com;
-`;
-
 import { createThirdwebClient, getContract, prepareContractCall, sendTransaction } from "thirdweb";
 import { defineChain } from "thirdweb/chains";
 import { privateKeyToAccount } from "thirdweb/wallets";
 
+// ✅ Updated Cloudflare Worker with renamed bindings
 export default {
   async fetch(request, env) {
-    // ✅ CORS & CSP Headers (RESTORES STYLES, LOGO, AND SCRIPTS)
+    // ✅ CORS & Security Headers
     const corsHeaders = {
-      "Access-Control-Allow-Origin": "https://mojoclaim.producerprotocol.pro",
+      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST",
       "Access-Control-Allow-Headers": "Content-Type",
-      "Content-Security-Policy": cspHeaderValue,
+      "Content-Security-Policy": "default-src 'self' https://thirdweb.com https://cdn.thirdweb.com; script-src 'self' 'unsafe-eval' https://thirdweb.com https://cdn.thirdweb.com;"
     };
 
     // ✅ Handle CORS Preflight Requests
@@ -51,9 +43,7 @@ export default {
 
       const allowlist = JSON.parse(await allowlistObj.text());
 
-      // ✅ Debugging Log (Optional)
-      console.log("Allowlist Data:", allowlist);
-
+      // ✅ Check if wallet is eligible
       if (!allowlist.addresses.includes(walletLower)) {
         return new Response(
           JSON.stringify({ status: "error", message: "Not Eligible" }),
@@ -62,7 +52,7 @@ export default {
       }
 
       // ✅ Check if wallet has already claimed
-      const alreadyClaimed = await env.mojo.get(walletLower);
+      const alreadyClaimed = await env.mojo_kv.get(walletLower);
       if (alreadyClaimed) {
         return new Response(
           JSON.stringify({ status: "error", message: "Already Claimed" }),
@@ -110,7 +100,7 @@ export default {
       });
 
       // ✅ Store claim status in KV
-      await env.mojo.put(walletLower, "claimed");
+      await env.mojo_kv.put(walletLower, "claimed");
 
       return new Response(
         JSON.stringify({ status: "success", transactionHash }),
