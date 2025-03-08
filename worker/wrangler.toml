@@ -1,7 +1,8 @@
 name = "mojo-claim-worker"
 main = "worker/index.js"
 compatibility_date = "2025-03-06"
-
+[build]
+command = "npm install --force && npm run build"
 
 # Environment Variables
 [vars]
