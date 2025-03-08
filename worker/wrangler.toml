@@ -1,9 +1,6 @@
 name = "mojo-claim-worker"
 main = "worker/index.js"
 compatibility_date = "2025-03-06"
-[build]
-command = "npm install --force && npm run build"
-
 # Environment Variables
 [vars]
 QUICKNODE_RPC_URL = "https://nameless-practical-seed.optimism.quiknode.pro/e4850d21b93c9dc2993e74d91ebb00e4c3171f38/"
