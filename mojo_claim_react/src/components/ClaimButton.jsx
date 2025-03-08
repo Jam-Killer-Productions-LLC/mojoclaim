@@ -1,5 +1,5 @@
 import {
-  useConnectedWallet,
+  useWallet,
   useConnect,
 } from "thirdweb/react";
 import { createWallet } from "thirdweb/wallets";
