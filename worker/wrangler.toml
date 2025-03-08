@@ -2,8 +2,6 @@ name = "mojo-claim-worker"
 main = "worker/index.js"
 compatibility_date = "2025-03-06"
 
-[build]
-command = "[ -d worker/node_modules ] || (cd worker && npm install)"
 
 # Environment Variables
 [vars]

@@ -1,13 +1,14 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import { createRoot } from "react-dom/client";
+import { App } from "./App";
 import { ThirdwebProvider } from "thirdweb/react";
+import "./index.css";
 
-const clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;  // ✅ Load from .env
-
-ReactDOM.createRoot(document.getElementById("root")).render(
+const rootElement = document.getElementById("root");
+if (!rootElement) throw new Error("Failed to find the root element");
+createRoot(rootElement).render(
   <React.StrictMode>
-    <ThirdwebProvider clientId={clientId}>
+    <ThirdwebProvider>
       <App />
     </ThirdwebProvider>
   </React.StrictMode>
