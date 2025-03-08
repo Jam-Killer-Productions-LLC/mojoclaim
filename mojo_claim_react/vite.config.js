@@ -6,11 +6,5 @@ export default defineConfig({
   root: "./",
   build: {
     outDir: "dist",
-  },
-  resolve: {
-    alias: {
-      // Explicitly map .tsx to .jsx
-      "/src/main.tsx": "/src/main.jsx",
-    },
-  },
+  }
 });
