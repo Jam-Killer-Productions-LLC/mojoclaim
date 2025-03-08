@@ -1,8 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
-  root: "mojo_claim_react",
+  root: "mojo-claim-react",  // 🔥 Set correct root directory
   base: "./",
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      input: "mojo-claim-react/index.html",  // 🔥 Force Vite to find it
+    },
+  },
 });
