@@ -1,13 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
-  root: "mojo-claim-react",  // 🔥 Set correct root directory
+  root: path.resolve(__dirname, "mojo_claim_react"), // 🔥 Absolute path to be safe
   base: "./",
   plugins: [react()],
   build: {
     rollupOptions: {
-      input: "mojo-claim-react/index.html",  // 🔥 Force Vite to find it
+      input: path.resolve(__dirname, "mojo_claim_react/index.html"), // 🔥 Force correct input
     },
   },
 });
