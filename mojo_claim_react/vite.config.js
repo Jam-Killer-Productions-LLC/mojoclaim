@@ -3,8 +3,14 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  root: "./src", // Set root directory
+  root: "./",
   build: {
-    outDir: "../dist", // Output build to parent dist folder
+    outDir: "dist",
+  },
+  resolve: {
+    alias: {
+      // Explicitly map .tsx to .jsx
+      "/src/main.tsx": "/src/main.jsx",
+    },
   },
 });

@@ -1,5 +1,6 @@
 import { ConnectButton } from "thirdweb/react";
-import thirdwebIcon from "./thirdweb.svg";
+import MojoClaimIcon from "./PPs.svg";
+
 import { client } from "./client";
 
 export function App() {
