@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import WalletConnect from "./components/WalletConnect";
+
 import ClaimButton from "./components/ClaimButton";
 import "./styles.css";
 export default function App() {
