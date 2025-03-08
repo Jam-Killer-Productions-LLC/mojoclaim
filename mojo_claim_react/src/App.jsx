@@ -1,6 +1,6 @@
 import { ConnectButton } from "thirdweb/react";
 import MojoClaimIcon from "./assets/PPs.svg";
-
+import ClaimButton from "./components/ClaimButton.jsx" ;
 import { client } from "./client";
 
 export function App() {
