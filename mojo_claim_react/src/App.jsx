@@ -1,5 +1,5 @@
 import { ConnectButton } from "thirdweb/react";
-import MojoClaimIcon from "./PPs.svg";
+import MojoClaimIcon from "./assets/PPs.svg";
 
 import { client } from "./client";
 
