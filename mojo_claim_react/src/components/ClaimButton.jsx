@@ -1,19 +1,28 @@
-import { useWallet, useConnect, metamaskWallet } from "thirdweb/react";
+import {
+  useConnectedWallet,
+  useConnect,
+} from "thirdweb/react";
+import { createWallet } from "thirdweb/wallets";
+
 const ClaimButton = () => {
-  const wallet = useWallet();
+  const wallet = useConnectedWallet();
   const connect = useConnect();
+
+  const handleConnect = () => {
+    connect(createWallet("io.metamask"));
+  };
+
   return (
     <div>
       {wallet ? (
-        <button onClick={() => alert("Claim function coming soon!")} className="claim-button">
-          Claim Mojo
-        </button>
+        <button>Claim Mojo</button>
       ) : (
-        <button onClick={() => connect(metamaskWallet())} className="claim-button">
+        <button onClick={handleConnect}>
           Connect Wallet
         </button>
       )}
     </div>
   );
 };
+
 export default ClaimButton;
