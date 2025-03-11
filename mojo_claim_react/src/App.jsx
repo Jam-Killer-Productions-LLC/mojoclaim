@@ -37,13 +37,8 @@ export function App() {
       <div className="content">
         <h1>Mojo Claim</h1>
 
-        {/* Mojo Logo (Stacked Above) */}
+        {/* Connect Button */}
         <div className="flex flex-col items-center mb-8">
-          <img 
-            src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
-            alt="Mojo Logo" 
-            className="w-24 h-24 mb-6" 
-          />
           <ConnectButton
             client={client}
             appMetadata={{
@@ -53,12 +48,15 @@ export function App() {
           />
         </div>
 
-        {/* Claim Button with More Spacing */}
-        <div className="mt-8">
-          <button onClick={claimMojo} className="claim-btn">
-            Claim MOJO
-          </button>
-        </div>
+        {/* Claim Button with Centered Logo */}
+        <button onClick={claimMojo} className="claim-btn flex flex-col items-center justify-center p-4">
+          <img 
+            src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
+            alt="Mojo Logo" 
+            className="w-10 h-10 mb-2"
+          />
+          <span>Claim MOJO</span>
+        </button>
 
         {message && <p className="status-message mt-4">{message}</p>}
       </div>
