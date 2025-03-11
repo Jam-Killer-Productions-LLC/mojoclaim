@@ -1,4 +1,9 @@
-:root* {
+:root {
+  --primary-color: #ff6200;
+  --background-color: #000;
+}
+
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -7,16 +12,15 @@
 html, body {
   height: 100%;
   font-family: sans-serif;
+  background: var(--background-color);
 }
 
 .background {
   background-image: url('https://bafybeib7yugpk6niip2t5gru6m5qcp43g4g2hp4fzlnlj7tm545vdj733u.ipfs.dweb.link?filename=newbackgroundmojoclaim.gif');
-  background-size: cover; /* Ensures the image covers the whole screen */
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* Keeps the background static */
-  background-color: black; /* Fallback color in case the image doesn't load */
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -24,80 +28,82 @@ html, body {
 }
 
 .content {
-  max-width: 1200px;
+  max-width: 400px;
   width: 90%;
-  padding: 20px;
   text-align: center;
   color: #fff;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
 }
 
-.logo {
-  max-width: 200px;
-  height: auto;
-  margin-bottom: 20px;
-}
-
-.animated-text {
-  font-size: 2rem;
-  margin-bottom: 30px;
-}
-
-#wallet-connect {
+button.claim-btn {
   display: flex;
   flex-direction: column;
-  gap: 15px;
   align-items: center;
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  background-color: #ff6200;
+  justify-content: center;
+  width: 100%;
+  max-width: 250px;
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-button:hover {
+button.claim-btn:hover {
   background-color: #e55a00;
 }
 
-#status {
+.button-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-img {
+  width: 50px;
+  height: auto;
+  margin-bottom: 5px;
+}
+
+.claim-text {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.status-message {
+  margin-top: 15px;
   color: white;
-  margin-top: 10px;
   font-size: 1rem;
 }
 
+/* Responsive Fixes */
 @media (max-width: 768px) {
   .content {
-    padding: 15px;
-    width: 95%;
+    max-width: 95%;
   }
-  .logo {
-    max-width: 150px;
-  }
-  .animated-text {
-    font-size: 1.5rem;
-  }
-  button {
-    padding: 8px 16px;
+
+  .claim-btn {
+    max-width: 200px;
     font-size: 1rem;
+    padding: 10px;
+  }
+
+  .logo-img {
+    width: 40px;
   }
 }
 
 @media (max-width: 480px) {
-  .content {
-    padding: 10px;
-  }
-  .animated-text {
-    font-size: 1.2rem;
-  }
-  button {
-    padding: 6px 12px;
+  .claim-btn {
+    max-width: 180px;
     font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .logo-img {
+    width: 35px;
   }
 }

@@ -49,16 +49,18 @@ export function App() {
         </div>
 
         {/* Claim Button with Centered Logo */}
-        <button onClick={claimMojo} className="claim-btn flex flex-col items-center justify-center p-4">
-          <img 
-            src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
-            alt="Mojo Logo" 
-            className="w-10 h-10 mb-2"
-          />
-          <span>Claim MOJO</span>
+        <button onClick={claimMojo} className="claim-btn">
+          <div className="button-content">
+            <img 
+              src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
+              alt="Mojo Logo" 
+              className="logo-img"
+            />
+            <span className="claim-text">Claim MOJO</span>
+          </div>
         </button>
 
-        {message && <p className="status-message mt-4">{message}</p>}
+        {message && <p className="status-message">{message}</p>}
       </div>
     </div>
   );
