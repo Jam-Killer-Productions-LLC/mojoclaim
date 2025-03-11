@@ -34,6 +34,13 @@ html, body {
   color: #fff;
 }
 
+/* Adds proper spacing between Connect Button & Claim Button */
+.connect-button-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px; /* Creates space */
+}
+
 button.claim-btn {
   display: flex;
   flex-direction: column;
@@ -49,6 +56,7 @@ button.claim-btn {
   font-size: 1.2rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin: 0 auto; /* Centers the button */
 }
 
 button.claim-btn:hover {
@@ -73,6 +81,7 @@ button.claim-btn:hover {
   font-weight: bold;
 }
 
+/* Ensures status messages don't overlap */
 .status-message {
   margin-top: 15px;
   color: white;

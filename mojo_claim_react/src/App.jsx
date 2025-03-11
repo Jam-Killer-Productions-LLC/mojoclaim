@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export function App() {
   const account = useActiveAccount();
-  const address = account?.address; 
+  const address = account?.address;
   const [message, setMessage] = useState("");
 
   const claimMojo = async () => {
@@ -37,8 +37,8 @@ export function App() {
       <div className="content">
         <h1>Mojo Claim</h1>
 
-        {/* Connect Button */}
-        <div className="flex flex-col items-center mb-8">
+        {/* Connect Button with proper spacing */}
+        <div className="connect-button-container">
           <ConnectButton
             client={client}
             appMetadata={{
@@ -48,12 +48,12 @@ export function App() {
           />
         </div>
 
-        {/* Claim Button with Centered Logo */}
+        {/* Claim Button with Logo centered above text */}
         <button onClick={claimMojo} className="claim-btn">
           <div className="button-content">
-            <img 
-              src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
-              alt="Mojo Logo" 
+            <img
+              src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif"
+              alt="Mojo Logo"
               className="logo-img"
             />
             <span className="claim-text">Claim MOJO</span>
