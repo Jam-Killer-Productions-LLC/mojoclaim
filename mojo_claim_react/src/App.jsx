@@ -4,7 +4,7 @@ import { client } from "/src/client.js";
 import { useState } from "react";
 
 export function App() {
-  const wallet = useWallet(); // Get the connected wallet
+  const wallet = useConnectedWallet(); // Get the connected wallet
   const [message, setMessage] = useState(""); // Display success/error
 
   const claimMojo = async () => {
@@ -14,10 +14,10 @@ export function App() {
     }
 
     try {
-      const response = await fetch("mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
+      const response = await fetch("https://mojo-claim-worker.fletcher-christians-account3359.workers.dev", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ wallet: wallet.address }),
+        body: JSON.stringify({ wallet: wallet?.address ?? "" }),
       });
 
       const data = await response.json();
@@ -34,7 +34,10 @@ export function App() {
   return (
     <div className="background">
       <div className="content">
-        <img src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" alt="Mojo Logo" />
+        <img 
+          src="https://bafybeig6dpytw3q4v7vzdy6sb7q4x3apqgrvfi3zsbvb3n6wvs5unfr36i.ipfs.dweb.link?filename=480.gif" 
+          alt="Mojo Logo" 
+        />
         <h1>Mojo Claim</h1>
         <div className="flex justify-center mb-20">
           <ConnectButton
@@ -45,10 +48,7 @@ export function App() {
             }}
           />
         </div>
-        <button
-          onClick={claimMojo}
-          className="claim-btn"
-        >
+        <button onClick={claimMojo} className="claim-btn">
           Claim MOJO
         </button>
         {message && <p className="status-message">{message}</p>}
